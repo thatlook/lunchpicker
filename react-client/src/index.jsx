@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 // import $ from 'jquery';
 import axios from 'axios';
 
-// import Closest from './components/Closest.jsx';
+import Closest from './components/closest.jsx';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      myAddr: '',
+      myAddr: '119 Nueces St. Austin TX 78701',
       totalStores: 0,
       main: 'main',
       restaurants: [],
@@ -26,11 +26,11 @@ class App extends React.Component {
     })
   }
 
-  handleSubmit(event){
+  handleSubmitAddr(event){
     event.preventDefault();
-    // console.log('>>> my addr in handleSubmit', this.state.myAddr);
-    axios.post('/closest', this.state.myAddr).then((res)=>{
-      console.log('>>> res from axios: ', res.data);
+    // TODO: change me!
+    axios.post('/closest', { myAddr: '119 Nueces St. Austin TX 78701' }).then((res)=>{
+      // console.log('>>> res from axios: ', res.data);
       
       this.setState({
         main: 'closest',  // redirect to next page
@@ -44,7 +44,7 @@ class App extends React.Component {
     })
   }
 
-  handleChange(event){
+  handleChangeAddr(event){
     this.setState({
       myAddr: event.target.value
     })
@@ -53,11 +53,12 @@ class App extends React.Component {
   render () {
     // main page
     if (this.state.main === 'main') {
-      return (<div>
+      return (
+      <div>
         <h3>There are {this.state.totalStores} restaurants in the database!</h3>
         <h1>My Address</h1>
-        <form onSubmit={this.handleSubmit.bind(this)}>
-          <input type="text" name="myAddr" onChange={this.handleChange.bind(this)}></input>
+        <form onSubmit={this.handleSubmitAddr.bind(this)}>
+          <input type="text" name="myAddr" onChange={this.handleChangeAddr.bind(this)}></input>
           <input type="submit" value="submit"></input>
         </form>
       </div>)
@@ -66,9 +67,7 @@ class App extends React.Component {
       return (
         <div>
           <h1>These are the closest restaurants!</h1>
-          <table>
-
-          </table>
+          <Closest restaurants={this.state.restaurants}/>
         </div>
       )
       // if error

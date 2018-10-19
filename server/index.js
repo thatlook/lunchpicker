@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var { totalCount } = require('../database-mysql');
 var { totalCount } = require('../database-mongo');
+var { getYelpStores } = require('../util/yelp.js')
 
 var app = express();
 
@@ -19,9 +20,15 @@ app.get('/total', function (req, res) {
 });
 
 app.post('/closest', (req, res)=>{
-  let data = [];
-  res.json(data);
-  res.end();
+  // console.log('>>> myAddr recieved in express', req.body.myAddr)
+
+  getYelpStores(req.body.myAddr, (err, data) => {
+    let yelpArray = JSON.parse(data).businesses;
+    // console.log('>>> fresh from yelp!', yelpArray)
+    res.json(yelpArray);
+    res.end();
+
+  })
 })
 
 app.listen(3000, function() {
