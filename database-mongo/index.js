@@ -11,21 +11,32 @@ db.once('open', function() {
   console.log('mongoose connected successfully');
 });
 
-var itemSchema = mongoose.Schema({
-  quantity: Number,
-  description: String
+// if table exists, leave it. if empty, retrieve data from yelp again
+
+var Restaurants = mongoose.Schema({
+  name: String,
+
+  address1: String,
+  address2: String,
+  address3: String,
+
+  city: String,
+  state: String,
+  zip_code: String,
+  
+  latitude: String,
+  longitude: String,
+  
+  url: String,
+  rating: String,
+
 });
 
-var Item = mongoose.model('Item', itemSchema);
+var Item = mongoose.model('Item', Restaurants);
 
-var selectAll = function(callback) {
-  Item.find({}, function(err, items) {
-    if(err) {
-      callback(err, null);
-    } else {
-      callback(null, items);
-    }
-  });
+var totalCount = function(callback) {
+  // find total count from mongoose
+  return 50;
 };
 
-module.exports.selectAll = selectAll;
+module.exports.totalCount = totalCount;

@@ -3,18 +3,25 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : 'FILL_ME_IN',
-  database : 'test'
+  password : '',
+  // database : 'HungryLazy'
 });
 
-var selectAll = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
-    if(err) {
-      callback(err, null);
-    } else {
-      callback(null, results);
-    }
-  });
+connection.connect();
+
+// need to create a table...?
+
+
+
+var totalCount = function(callback) {
+  // connection.query('SELECT * FROM items', function(err, results, fields) {
+  //   if(err) {
+  //     callback(err, null);
+  //   } else {
+  //     callback(null, results);
+  //   }
+  // });
+  callback(null, 50)
 };
 
-module.exports.selectAll = selectAll;
+module.exports.totalCount = totalCount;
