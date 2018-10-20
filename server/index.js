@@ -2,54 +2,77 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-var { totalCount, saveShopToModel } = require('../database-mongo');
-var { getYelpStores } = require('../util/yelp.js')
+var { saveShopToModel, searchAddr, searchShops, retrieveShops } = require('../database-mongo');
+var { getYelpStores } = require('../util/yelp.js');
 
 
 app.use(express.static(__dirname + '/../react-client/dist'));
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
-// get total number of stores in database
-app.get('/total', function (req, res) {
-  totalCount((total)=>{
-    res.json(total);
-    res.end();
-  })
-});
 
-// get top 20 closest stores from yelp api
+
+// 1) save address to db, 2) fetch and save shops to db
 app.post('/closest', (req, res)=>{
   // console.log('>>> myAddr recieved in express', req.body.myAddr)
+  let myAddr = req.body.myAddr;
   
-  getYelpStores(req.body.myAddr, (err, data) => {
-    if (err) {
-      // TODO: do something
-      return
-    }
-    let yelpArray = JSON.parse(data).businesses;
-    // console.log('>>> fresh from yelp!', yelpArray)
-    
-    // send to front end
-    res.json(yelpArray);
-    res.end();
-    
+  
+  new Promise((resolve, reject) => {
+    resolve(searchAddr(myAddr)) // save address to db
   })
-})
+  // look up if shops have myAddr
+  .then(() => {
+    searchShops(myAddr)
+    .then((docs) => {
+      // if they do
+      if (!!docs.length) {
+        res.json(docs);
+        res.end();
+      
+      // if they dont
+      } else {  
+        // yelp!
+        getYelpStores(myAddr, (err, data) => {
+          if (err) {
+            console.error(err)
+          } else {
+            let yelpArray = JSON.parse(data).businesses;
+            res.json(yelpArray.slice(0, 10));
+            res.end();
+
+            // save to db
+            for (let shop of yelpArray) {
+                saveShopToModel(shop)
+            }
+            }
+
+          })
+        }
+      })
+    })
+  })
+  
+  
+  
+  
+
+
+  
+
 
 // send went stores to db
 app.post('/went', (req, res) => {
 
-  // console.log('>>> /went in express', req.body.shop)
-  let shop = req.body.shop;
-  shop.visited = true;
-  // send to db!
+  // // console.log('>>> /went in express', req.body.shop)
+  // let shop = req.body.shop;
+  // shop.visited = true;
+  // // send to db!
 
-  saveShopToModel(shop)
+  // saveShopToModel(shop)
 
   
 })
-
 
 
 

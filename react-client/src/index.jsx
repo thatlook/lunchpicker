@@ -11,7 +11,6 @@ class App extends React.Component {
     
     this.state = { 
       myAddr: '119 Nueces St. Austin TX 78701',  // my current address
-      totalStores: 0,  // number of stores in DB
       main: 'main',  // used as react side router
       restaurants: [],  // all restaurants to show
       visited: [],  // all restaurants hidden because visited
@@ -19,32 +18,24 @@ class App extends React.Component {
       random: false
     };
 
-    // line-through css
-    // this.tdStyle = {  
-    //   textDecoration: 'line-through'
-    // }
-
   }
 
   componentDidMount() {
     // get number of stores from database
-    axios.get('/total').then((res)=>{
-      // console.log('>>> total stores from axios', res.data)
-      this.setState({
-        totalStores: res.data
-      })
-    })
+
   }
 
   handleSubmitAddr(event){
     event.preventDefault();
-    // TODO: change me!
+
+    console.log(this.state.myAddr)
+    // 1) save address to db, 2) fetch and save shops to db, 3) render shops on page
     axios.post('/closest', { myAddr: this.state.myAddr }).then((res)=>{
       // console.log('>>> res from axios: ', res.data);
       
       this.setState({
         main: 'closest',  // redirect to next page
-        restaurants: res.data
+        restaurants: res.data  // shops excluding visited
       })
 
     })
@@ -52,10 +43,14 @@ class App extends React.Component {
   }
 
   handleChangeAddr(event){
-    this.setState({
-      myAddr: event.target.value
+    event.preventDefault();
+    event.persist();
+
+    this.setState((state) => {
+      return {myAddr: event.target.value}
     })
-    // add visited addr to db
+
+
   }
 
 

@@ -1,3 +1,4 @@
+// connect
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');
 
@@ -12,31 +13,66 @@ db.once('open', function() {
 });
 
 
+
+
+// Models
+const Addrs = mongoose.Schema({
+  myAddr: String,  // TODO: v. naive version.... fix later
+
+});
+
+const AddrModel = mongoose.model('Models', Addrs);
+
 const Restaurants = mongoose.Schema({
   id: String,
   name: String,
-
-  address1: String,
-  address2: String,
-  address3: String,
-
-  city: String,
-  state: String,
-  zip_code: String,
-  
-  latitude: String,
-  longitude: String,
-  
+  visited: Boolean,
   url: String,
   rating: String,
-
-  visited: Boolean
+  is_open: Boolean,
+  myAddr: String,  // TODO: v. naive version.... fix later
 
 });
 
 const RestModel = mongoose.model('Restaurants', Restaurants);
 
-const saveShopToModel = ({id, name, visited, url, rating, is_open}) => {
+
+
+
+
+
+// functions
+
+const searchShops = (myAddr) => {
+
+  return RestModel.find({myAddr}).limit(10)
+}
+
+const retrieveShops = (myAddr, cb) => {
+  RestModel.find({myAddr}).limit(10).exec((err, doc) => {
+    if (err) {
+      console.error(err)
+    } else {
+      cb(doc)
+    }
+  })
+
+}
+
+const searchAddr = (myAddr) => {
+  AddrModel.find({myAddr}).exec((err, doc) => {
+    if (!doc.length) {
+      console.log(`>>> ${myAddr} address added`)
+      AddrModel.create({myAddr}, (err, small) => {
+        if (err) {
+          console.error(err)
+        }
+      })
+    }
+  })
+}
+
+const saveShopToModel = ({id, name, visited, url, rating, is_open}, myAddr) => {
   // validate if id exists
   RestModel.find({id}).exec((err, doc) => {
     if (!doc.length) {
@@ -48,6 +84,7 @@ const saveShopToModel = ({id, name, visited, url, rating, is_open}) => {
         url,
         rating,
         is_open,
+        myAddr
     
       }, (err, small) => {
         if (err) {
@@ -57,17 +94,16 @@ const saveShopToModel = ({id, name, visited, url, rating, is_open}) => {
 
     }
   })
-
-
-
 }
 
-const totalCount = (cb) => {
-  // find total count from mongoose
-  RestModel.find().exec((err, doc)=>{
-    cb(doc.length)
-  })
-};
 
-module.exports.totalCount = totalCount;
+
+
+
+
 module.exports.saveShopToModel = saveShopToModel;
+module.exports.searchAddr = searchAddr;
+module.exports.searchShops = searchShops;
+module.exports.retrieveShops = retrieveShops;
+
+
