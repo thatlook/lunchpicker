@@ -105,6 +105,17 @@ class App extends React.Component {
     })
   }
 
+  handleShowAll(event){
+    event.preventDefault();
+    let myAddr = this.state.myAddr;
+    axios.post('/all', {myAddr}).then((res) => {
+      this.setState({
+        visited:[],
+        restaurants: res.data
+      })
+    })
+  }
+
 
   render () {
     // console.log('>>> state', this.state.main)
@@ -125,15 +136,16 @@ class App extends React.Component {
 
         <div style={divStyle}>
           <h2>You have visited {this.state.myPastAddr.length} restaurants from...</h2>
-          <br></br>
-          {this.state.myPastAddr.map((addr, key) => {
-          return (
-            <li>
-            <a href="#" onClick={this.handleSubmitAddr.bind(this)}>{addr}</a>
-            </li>
-            )
+        </div>
 
-          })}
+        <div style={{textAlign: 'center'}}>
+          {this.state.myPastAddr.map((addr, key) => {
+            return (
+              <li>
+              <a href="#" onClick={this.handleSubmitAddr.bind(this)}>{addr}</a>
+              </li>
+              )})
+          }
         </div>
 
         <div style={divStyle}>
@@ -169,7 +181,7 @@ class App extends React.Component {
           <br></br><br></br>
           <div style={divStyle}>
             <button onClick={this.goBackToSearch.bind(this)} style={{marginLeft: '50px', marginRight: '20px'}}>Go back</button>
-            
+            <button onClick={this.handleShowAll.bind(this)}>Reset visits</button>
             <button onClick={this.randomPicker.bind(this)} style={{marginRight: '50px', marginLeft: '20px'}}>Random</button>
           </div>
 

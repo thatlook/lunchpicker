@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-var { saveShopToModel, searchAddr, searchShops, updateVisit } = require('../database-mongo');
+var { saveShopToModel, searchAddr, searchShops, updateVisit, updateAll } = require('../database-mongo');
 var { getYelpStores } = require('../util/yelp.js');
 
 
@@ -42,7 +42,7 @@ app.post('/closest', (req, res)=>{
             res.end();
 
             // save to db
-            for (let shop of yelpArray) {
+            for (let shop of yelpArray.slice(0, 10)) {
                 saveShopToModel(shop, myAddr)
             }
             }
@@ -64,13 +64,18 @@ app.post('/closest', (req, res)=>{
 // send went stores to db
 app.post('/went', (req, res) => {
 
-  // // console.log('>>> /went in express', req.body.shop)
+  // console.log('>>> /went in express', req.body.shop)
   let shop = req.body.shop;
   updateVisit(shop)
   
 })
 
+app.post('/all', (req, res) => {
+  updateAll(req.body.myAddr, (data) => {
+    res.json(data.slice(10))
+  })
 
+})
 
 
 

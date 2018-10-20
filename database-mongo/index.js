@@ -96,6 +96,23 @@ const updateVisit = ({id}) => {
   })
 }
 
+const updateAll = (myAddr, cb) => {
+  RestModel.update({visited: true}, {visited:false}, (err, small) => {
+    if (err) {
+      console.error(err)
+    } else {
+      RestModel.find({myAddr}).exec((err, doc) => {
+        if (err) {
+          console.error(err)
+        } else {
+          cb(doc)
+          console.log('>>> all visited are changed to false and sent!')
+
+        }
+      })
+    }
+  })
+}
 
 
 
@@ -104,5 +121,6 @@ module.exports.saveShopToModel = saveShopToModel;
 module.exports.searchAddr = searchAddr;
 module.exports.searchShops = searchShops;
 module.exports.updateVisit = updateVisit;
+module.exports.updateAll = updateAll;
 
 
