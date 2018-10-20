@@ -31,10 +31,9 @@ class App extends React.Component {
 
   handleSubmitAddr(event){
     event.preventDefault();
+    this.setState({main: 'closest'})
+
     this.setState((state) => {
-
-      this.setState({main: 'closest'})
-
       if (!state.myPastAddr.includes(state.myAddr)) {
         state.myPastAddr.push(state.myAddr)
 
@@ -44,7 +43,6 @@ class App extends React.Component {
           // console.log('>>> res from axios: ', res.data);
           
           this.setState({
-            // main: 'closest',  // redirect to next page
             restaurants: res.data,  
             visited: []
           })
@@ -52,6 +50,8 @@ class App extends React.Component {
         })
 
       }
+
+      
 
     })
 
@@ -121,7 +121,7 @@ class App extends React.Component {
         
         return (
           <li>
-          <a href="">{addr}</a>
+          <a href="#" onClick={this.handleSubmitAddr.bind(this)}>{addr}</a>
           </li>
           )
 
@@ -145,16 +145,13 @@ class App extends React.Component {
             randomChosen={this.state.randomChosen}
             isRandom={this.state.random}
           />
-          {/* TODO:  */}
           <br></br>
           <button onClick={this.goBackToSearch.bind(this)}>Go back</button>
-          <button>Show all 20</button>
+          {/* <button>Show all 20</button> */}
           <button onClick={this.randomPicker.bind(this)}>Random</button>
         </div>
       )
-    } else if (this.state.main === 'login') {
-      // login with first/last name
-    } 
+    }
 
   }
 
