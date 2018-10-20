@@ -12,9 +12,10 @@ app.use(bodyParser.urlencoded({extended: false}))
 
 // get total number of stores in database
 app.get('/total', function (req, res) {
-  let total = totalCount();
-  res.json(total);
-  res.end();
+  totalCount((total)=>{
+    res.json(total);
+    res.end();
+  })
 });
 
 // get top 20 closest stores from yelp api

@@ -62,9 +62,11 @@ const saveShopToModel = ({id, name, visited, url, rating, is_open}) => {
 
 }
 
-const totalCount = () => {
+const totalCount = (cb) => {
   // find total count from mongoose
-  return 50;
+  RestModel.find().exec((err, doc)=>{
+    cb(doc.length)
+  })
 };
 
 module.exports.totalCount = totalCount;

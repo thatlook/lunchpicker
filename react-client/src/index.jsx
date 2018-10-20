@@ -15,6 +15,8 @@ class App extends React.Component {
       main: 'main',  // used as react side router
       restaurants: [],  // all restaurants to show
       visited: [],  // all restaurants hidden because visited
+      myPastAddr: ['119 Nueces St. Austin TX 78701'],  // my past restaurants
+      random: false
     };
 
     // line-through css
@@ -53,6 +55,7 @@ class App extends React.Component {
     this.setState({
       myAddr: event.target.value
     })
+    // add visited addr to db
   }
 
 
@@ -72,14 +75,47 @@ class App extends React.Component {
 
   }
 
+  randomPicker(event){
+    event.preventDefault();
+
+    // TODO: choose random shop
+    let limit = this.state.restaurants.length;  // TODO: reflect what was taken out...
+    console.log('>>> random', Math.floor(Math.random()*(limit - 1)))
+
+    this.setState({
+      random: true,
+      randomChosen: 'Here'
+    })
+  }
+
+  goBackToSearch(event){
+    event.preventDefault();
+
+    this.setState({
+      main: 'main'
+    })
+  }
+
 
   render () {
     // main page
     if (this.state.main === 'main') {
       return (
       <div>
-        <h3>There are {this.state.totalStores} restaurants in the database!</h3>
-        <h1>My Address</h1>
+        <h1>Hungry & Lazy</h1>
+        <h2>You have visited {this.state.totalStores} restaurants from...</h2>
+        {this.state.myPastAddr.map((addr, key) => {
+        
+        return (
+          <li>
+          <a href="">{addr}</a>
+          </li>
+          )
+
+        })}
+        <br></br>
+        <br></br>
+        <h2>Add new address</h2>
         <form onSubmit={this.handleSubmitAddr.bind(this)}>
           <input type="text" name="myAddr" onChange={this.handleChangeAddr.bind(this)}></input>
           <input type="submit" value="submit"></input>
@@ -89,13 +125,29 @@ class App extends React.Component {
     } else if (this.state.main === 'closest') {
       return (
         <div>
-          <h1>These are the closest restaurants!</h1>
-          <Closest restaurants={this.state.restaurants} visited={this.state.visited} handleOmit={this.handleOmit.bind(this)}/>
+          <h1>These are the closest restaurants you haven't visited!</h1>
+          <Closest restaurants={this.state.restaurants} 
+            visited={this.state.visited} 
+            handleOmit={this.handleOmit.bind(this)}
+            randomChosen={this.state.randomChosen}
+            isRandom={this.state.random}
+          />
+          {/* TODO:  */}
+          <br></br>
+          <button onClick={this.goBackToSearch.bind(this)}>Go back</button>
+          <button>Show all</button>
+          <button onClick={this.randomPicker.bind(this)}>Random</button>
         </div>
       )
+    } else if (this.state.main === 'login') {
+      // login with first/last name
     } 
 
   }
+
+
+
+
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));

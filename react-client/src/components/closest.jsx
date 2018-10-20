@@ -25,8 +25,18 @@ const Closest = (props) => {
   
     }
   })
+
+  let randomElem = (
+  <div>
+    <h2>Go to...</h2>
+    {props.randomChosen}
+  </div>
+  )
+
+  let random = props.isRandom ? randomElem : ""
   
   return (
+    <div>
     <table>
       <thead>
         <tr>
@@ -42,6 +52,10 @@ const Closest = (props) => {
         {rows}
       </tbody>
     </table>
+    <div>
+      {random}
+    </div>
+    </div>
   )
 
 }
