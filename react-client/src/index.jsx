@@ -116,6 +116,23 @@ class App extends React.Component {
     })
   }
 
+  handleReset(event){
+    event.preventDefault();
+    axios.get('/reset').then((res) => {
+      console.log('>>> should rerender...')
+      this.setState({
+        myAddr: '',  // my current address
+        // main: 'main',  // used as react side router
+        restaurants: [],  // all restaurants to show
+  
+        visited: [],  // all restaurants hidden because visited
+        myPastAddr: [],  // my past restaurants
+        random: false
+
+      })
+    })
+  }
+
 
   render () {
     // console.log('>>> state', this.state.main)
@@ -132,6 +149,9 @@ class App extends React.Component {
       <div>
         <div style={divStyle}>
           <h1>Hungry & Lazy</h1>
+        </div>
+        <div style={divStyle}>
+          <img src="lazycat.jpg" style={{width: '30%', height: '30%'}}></img>
         </div>
 
         <div style={divStyle}>
@@ -182,6 +202,7 @@ class App extends React.Component {
           <div style={divStyle}>
             <button onClick={this.goBackToSearch.bind(this)} style={{marginLeft: '50px', marginRight: '20px'}}>Go back</button>
             <button onClick={this.handleShowAll.bind(this)}>Reset visits</button>
+            <button onClick={this.handleReset.bind(this)}>Reset DB</button>
             <button onClick={this.randomPicker.bind(this)} style={{marginRight: '50px', marginLeft: '20px'}}>Random</button>
           </div>
 

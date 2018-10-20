@@ -2,6 +2,7 @@ import React from 'react';
 
 
 const Closest = (props) => {
+  console.log('>>> in closest', props.restaurants.length, props.visited)
   let rows = props.restaurants.map((shop, i) => {
     let {name, url, rating, is_closed, visited} = shop;
     i = i + 1;

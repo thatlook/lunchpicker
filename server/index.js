@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-var { saveShopToModel, searchAddr, searchShops, updateVisit, updateAll } = require('../database-mongo');
+var { saveShopToModel, searchAddr, searchShops, updateVisit, updateAll, deleteAll } = require('../database-mongo');
 var { getYelpStores } = require('../util/yelp.js');
 
 
@@ -72,12 +72,17 @@ app.post('/went', (req, res) => {
 
 app.post('/all', (req, res) => {
   updateAll(req.body.myAddr, (data) => {
-    res.json(data.slice(10))
+    console.log('>>> res.json data!', data.length)
+    res.json(data)
   })
 
 })
 
-
+app.get('/reset', (req, res) => {
+  deleteAll()
+  console.log('>>> DB deleted')
+  res.send(200)
+})
 
 app.listen(3000, function() {
   console.log('listening on port 3000!');

@@ -106,7 +106,6 @@ const updateAll = (myAddr, cb) => {
           console.error(err)
         } else {
           cb(doc)
-          console.log('>>> all visited are changed to false and sent!')
 
         }
       })
@@ -114,7 +113,10 @@ const updateAll = (myAddr, cb) => {
   })
 }
 
-
+const deleteAll = () => {
+  console.log('>>> delete all')
+  db.dropDatabase()
+}
 
 
 module.exports.saveShopToModel = saveShopToModel;
@@ -122,5 +124,6 @@ module.exports.searchAddr = searchAddr;
 module.exports.searchShops = searchShops;
 module.exports.updateVisit = updateVisit;
 module.exports.updateAll = updateAll;
+module.exports.deleteAll = deleteAll;
 
 

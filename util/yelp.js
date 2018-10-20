@@ -3,7 +3,7 @@ const { TOKEN } = require('../config.js');
 const data = require('../data.json');
 
 const getYelpStores = (myAddr, cb) => {
-  let baseurl = `https://api.yelp.com/v3/businesses/search?location=${myAddr}&sort_by=distance`
+  let baseurl = `https://api.yelp.com/v3/businesses/search?location=${myAddr}&sort_by=distance&limit=10`
   
   let options = {
     url: baseurl,
