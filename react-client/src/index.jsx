@@ -60,15 +60,16 @@ class App extends React.Component {
     event.preventDefault();
     // console.log('>>> event target value', event.target.value)
     
+    let i = parseInt(event.target.value);
     event.persist();  // to use in below in .setState
     this.setState((state) => {  // this is how to trigger state change of array
-      if (!state.visited.includes(parseInt(event.target.value))) {
-        state.visited.push(parseInt(event.target.value))
+      if (!state.visited.includes(i)) {
+        state.visited.push(i)
+        axios.post('/went', { shop: state.restaurants[i - 1] })  // send to db
         
       }
     })
 
-    // send to DB that this person went
   }
 
 

@@ -22,6 +22,7 @@ const getYelpStores = (myAddr, cb) => {
   // request.get(options, (err, res, body) => {
   //   if (err) {
   //     console.log('Error on getting API calls from yelp!')
+  //     cb(err, null)
   //   } else {
   //     cb(null, body)   
   //   }

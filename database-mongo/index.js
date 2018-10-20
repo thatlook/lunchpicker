@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');
 
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 db.on('error', function() {
   console.log('mongoose connection error');
@@ -11,9 +11,9 @@ db.once('open', function() {
   console.log('mongoose connected successfully');
 });
 
-// if table exists, leave it. if empty, retrieve data from yelp again
 
-var Restaurants = mongoose.Schema({
+const Restaurants = mongoose.Schema({
+  id: String,
   name: String,
 
   address1: String,
@@ -30,13 +30,42 @@ var Restaurants = mongoose.Schema({
   url: String,
   rating: String,
 
+  visited: Boolean
+
 });
 
-var Item = mongoose.model('Item', Restaurants);
+const RestModel = mongoose.model('Restaurants', Restaurants);
 
-var totalCount = function(callback) {
+const saveShopToModel = ({id, name, visited, url, rating, is_open}) => {
+  // validate if id exists
+  RestModel.find({id}).exec((err, doc) => {
+    if (!doc.length) {
+      console.log(`>>> ${name} added!`)
+      RestModel.create({
+        id,
+        name,
+        visited,
+        url,
+        rating,
+        is_open,
+    
+      }, (err, small) => {
+        if (err) {
+          console.error(err)
+        }
+      })
+
+    }
+  })
+
+
+
+}
+
+const totalCount = () => {
   // find total count from mongoose
   return 50;
 };
 
 module.exports.totalCount = totalCount;
+module.exports.saveShopToModel = saveShopToModel;
