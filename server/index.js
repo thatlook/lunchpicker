@@ -25,9 +25,13 @@ app.post('/closest', (req, res)=>{
   getYelpStores(req.body.myAddr, (err, data) => {
     let yelpArray = JSON.parse(data).businesses;
     // console.log('>>> fresh from yelp!', yelpArray)
+    
+    // send to front end
     res.json(yelpArray);
     res.end();
 
+    // send to database
+    
   })
 })
 

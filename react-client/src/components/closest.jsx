@@ -1,16 +1,58 @@
 import React from 'react';
 
-import ClosestRow from './closestRow.jsx';
 
 class Closest extends React.Component {
   constructor(props){
     super(props);
 
-    // TODO: pass props to ClosestRow!
+    this.state = {
+      visited: [],
+    }
+
+    // line-through css
+    // this.tdStyle = {  
+    //   textDecoration: 'line-through'
+    // }
+  }
+
+  handleOmit(event){
+    event.preventDefault();
+    // console.log('>>> event target value', event.target.value)
+    
+    event.persist();  // to use in below in .setState
+    this.setState((state) => {  // this is how to trigger state change of array
+      if (!state.visited.includes(parseInt(event.target.value))) {
+        state.visited.push(parseInt(event.target.value))
+        
+      }
+    })
+
+    // send to DB that this person went
   }
 
   render(){
-    // for each restaurant in props.restaurants...
+    // console.log('>>> re rendered!', this.state.visited)
+    let rows = this.props.restaurants.map((shop, i) => {
+      let {name, url, rating} = shop;
+      i = i + 1;
+      let linkedName = <a href={url}>{name}</a>
+      
+      if (this.state.visited.includes(i)) {
+        return (
+          <tr></tr>
+          ) 
+      } else {
+        return (
+          <tr>
+          <td>{i}</td>
+          <td>{linkedName}</td>
+          <td>{rating}</td>
+          <td><button value={i} onClick={this.handleOmit.bind(this)}>Went</button></td>
+          </tr>
+          ) 
+
+      }
+  })
 
     return (
       <table>
@@ -24,10 +66,7 @@ class Closest extends React.Component {
         </thead>
 
         <tbody>
-          {this.props.restaurants.map((shop, i)=> (
-            <ClosestRow shop={shop} index={i}/>
-          ))
-          }
+          {rows}
         </tbody>
       </table>
     )

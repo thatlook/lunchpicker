@@ -37,11 +37,12 @@ class App extends React.Component {
         restaurants: res.data
       })
 
-    }).catch((err)=>{
-      this.setState({
-        main: 'error'  // redirect to error page
-      })
     })
+    // .catch((err)=>{
+    //   this.setState({
+    //     main: 'error'  // redirect to error page
+    //   })
+    // })
   }
 
   handleChangeAddr(event){
