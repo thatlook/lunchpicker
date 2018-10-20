@@ -9,12 +9,10 @@ const Closest = (props) => {
     let open = is_closed ? 'Closed' : 'Open'
     
     if (props.visited.includes(i) || visited) {
-      return (
-        <tr></tr>
-        ) 
+      return 
     } else {
       return (
-        <tr>
+        <tr style={{height: '30px'}}>
         <td>{i}</td>
         <td>{linkedName}</td>
         <td>{open}</td>
@@ -27,17 +25,28 @@ const Closest = (props) => {
   })
 
   let randomElem = (
-  <div>
-    <h2>Go to...</h2>
-    {props.randomChosen}
-  </div>
+    <div>
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <h2>Go to</h2>
+      </div>
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        {props.randomChosen}
+      </div>
+
+    </div>
   )
 
-  let random = props.isRandom ? randomElem : ""
+  let random = props.isRandom ? randomElem : "";
+
+  let tableStyle = {
+    tableLayout: 'auto',
+    width: '90%',
+    padding: '40px'
+  }
   
   return (
     <div>
-    <table>
+    <table style={tableStyle}>
       <thead>
         <tr>
           <th></th>

@@ -38,7 +38,7 @@ class App extends React.Component {
         state.myPastAddr.push(state.myAddr)
 
         // 1) save address to db, 2) fetch and save shops to db, 3) render shops on page
-        console.log('>>> myaddr', this.state.myAddr)
+        // console.log('>>> myaddr', this.state.myAddr)
         axios.post('/closest', { myAddr: this.state.myAddr }).then((res)=>{
           // console.log('>>> res from axios: ', res.data);
           
@@ -91,9 +91,6 @@ class App extends React.Component {
     let limit = odds.length;
     let randomI = Math.floor(Math.random()*(limit - 1))
     let randomShop = odds[randomI].name;
-    console.log('>>> random shop', randomShop)
-    console.log('>>> rest/visited', this.state.restaurants.length, this.state.visited.length, odds)
-    console.log('>>> randomI', limit, randomI)
     this.setState({
       random: true,
       randomChosen: randomShop
@@ -111,44 +108,71 @@ class App extends React.Component {
 
   render () {
     // console.log('>>> state', this.state.main)
+    
+    const divStyle = {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+
     // main page
     if (this.state.main === 'main') {
       return (
       <div>
-        <h1>Hungry & Lazy</h1>
-        <h2>You have visited {this.state.totalStores} restaurants from...</h2>
-        {this.state.myPastAddr.map((addr, key) => {
-        
-        return (
-          <li>
-          <a href="#" onClick={this.handleSubmitAddr.bind(this)}>{addr}</a>
-          </li>
-          )
+        <div style={divStyle}>
+          <h1>Hungry & Lazy</h1>
+        </div>
 
-        })}
-        <br></br>
-        <br></br>
-        <h2>Add new address</h2>
-        <form onSubmit={this.handleSubmitAddr.bind(this)}>
-          <input type="text" name="myAddr" onChange={this.handleChangeAddr.bind(this)}></input>
-          <input type="submit" value="submit"></input>
-        </form>
+        <div style={divStyle}>
+          <h2>You have visited {this.state.myPastAddr.length} restaurants from...</h2>
+          <br></br>
+          {this.state.myPastAddr.map((addr, key) => {
+          return (
+            <li>
+            <a href="#" onClick={this.handleSubmitAddr.bind(this)}>{addr}</a>
+            </li>
+            )
+
+          })}
+        </div>
+
+        <div style={divStyle}>
+          <h2>Add new address</h2>
+        </div>
+
+        <div style={divStyle}>
+          <form onSubmit={this.handleSubmitAddr.bind(this)}>
+            <input type="text" name="myAddr" onChange={this.handleChangeAddr.bind(this)} style={{height: '20px'}}></input>
+            <input type="submit" value="submit"></input>
+          </form>
+        </div>
+
       </div>)
       // closest restaurant
     } else if (this.state.main === 'closest') {
+
       return (
         <div>
-          <h1>These are the closest restaurants you haven't visited!</h1>
-          <Closest restaurants={this.state.restaurants} 
-            visited={this.state.visited} 
-            handleOmit={this.handleOmit.bind(this)}
-            randomChosen={this.state.randomChosen}
-            isRandom={this.state.random}
-          />
-          <br></br>
-          <button onClick={this.goBackToSearch.bind(this)}>Go back</button>
-          {/* <button>Show all 20</button> */}
-          <button onClick={this.randomPicker.bind(this)}>Random</button>
+          <div style={divStyle}>
+            <h1>These are the closest restaurants!</h1>
+          </div>
+
+          <div>
+            <Closest restaurants={this.state.restaurants} 
+              visited={this.state.visited} 
+              handleOmit={this.handleOmit.bind(this)}
+              randomChosen={this.state.randomChosen}
+              isRandom={this.state.random}
+            />
+          </div>
+
+          <br></br><br></br>
+          <div style={divStyle}>
+            <button onClick={this.goBackToSearch.bind(this)} style={{marginLeft: '50px', marginRight: '20px'}}>Go back</button>
+            
+            <button onClick={this.randomPicker.bind(this)} style={{marginRight: '50px', marginLeft: '20px'}}>Random</button>
+          </div>
+
         </div>
       )
     }
