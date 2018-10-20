@@ -3,12 +3,12 @@ import React from 'react';
 
 const Closest = (props) => {
   let rows = props.restaurants.map((shop, i) => {
-    let {name, url, rating, is_closed} = shop;
+    let {name, url, rating, is_closed, visited} = shop;
     i = i + 1;
     let linkedName = <a href={url}>{name}</a>
-    let open = is_closed ? 'Open' : 'Closed'
+    let open = is_closed ? 'Closed' : 'Open'
     
-    if (props.visited.includes(i)) {
+    if (props.visited.includes(i) || visited) {
       return (
         <tr></tr>
         ) 

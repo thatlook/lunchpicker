@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-var { saveShopToModel, searchAddr, searchShops, retrieveShops } = require('../database-mongo');
+var { saveShopToModel, searchAddr, searchShops, updateVisit } = require('../database-mongo');
 var { getYelpStores } = require('../util/yelp.js');
 
 
@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // 1) save address to db, 2) fetch and save shops to db
 app.post('/closest', (req, res)=>{
-  // console.log('>>> myAddr recieved in express', req.body.myAddr)
+  console.log('>>> myAddr recieved in express', req.body.myAddr)
   let myAddr = req.body.myAddr;
   
   
@@ -27,7 +27,7 @@ app.post('/closest', (req, res)=>{
     .then((docs) => {
       // if they do
       if (!!docs.length) {
-        res.json(docs);
+        res.json(docs.slice(0, 10));
         res.end();
       
       // if they dont
@@ -43,7 +43,7 @@ app.post('/closest', (req, res)=>{
 
             // save to db
             for (let shop of yelpArray) {
-                saveShopToModel(shop)
+                saveShopToModel(shop, myAddr)
             }
             }
 
@@ -65,12 +65,8 @@ app.post('/closest', (req, res)=>{
 app.post('/went', (req, res) => {
 
   // // console.log('>>> /went in express', req.body.shop)
-  // let shop = req.body.shop;
-  // shop.visited = true;
-  // // send to db!
-
-  // saveShopToModel(shop)
-
+  let shop = req.body.shop;
+  updateVisit(shop)
   
 })
 

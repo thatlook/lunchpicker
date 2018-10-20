@@ -29,7 +29,7 @@ const Restaurants = mongoose.Schema({
   visited: Boolean,
   url: String,
   rating: String,
-  is_open: Boolean,
+  is_closed: Boolean,
   myAddr: String,  // TODO: v. naive version.... fix later
 
 });
@@ -48,17 +48,6 @@ const searchShops = (myAddr) => {
   return RestModel.find({myAddr}).limit(10)
 }
 
-const retrieveShops = (myAddr, cb) => {
-  RestModel.find({myAddr}).limit(10).exec((err, doc) => {
-    if (err) {
-      console.error(err)
-    } else {
-      cb(doc)
-    }
-  })
-
-}
-
 const searchAddr = (myAddr) => {
   AddrModel.find({myAddr}).exec((err, doc) => {
     if (!doc.length) {
@@ -72,18 +61,18 @@ const searchAddr = (myAddr) => {
   })
 }
 
-const saveShopToModel = ({id, name, visited, url, rating, is_open}, myAddr) => {
-  // validate if id exists
+const saveShopToModel = ({id, name, url, rating, is_closed}, myAddr) => {
+  // console.log('>>> in save shop to model', id, name, url, rating, is_closed, myAddr)
   RestModel.find({id}).exec((err, doc) => {
     if (!doc.length) {
       console.log(`>>> ${name} added!`)
       RestModel.create({
         id,
         name,
-        visited,
+        visited: false,
         url,
         rating,
-        is_open,
+        is_closed,
         myAddr
     
       }, (err, small) => {
@@ -96,6 +85,16 @@ const saveShopToModel = ({id, name, visited, url, rating, is_open}, myAddr) => {
   })
 }
 
+const updateVisit = ({id}) => {
+  RestModel.update({id: id}, {visited: true}, (err, d) => {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('>>> visited to be updated...')
+      
+    }
+  })
+}
 
 
 
@@ -104,6 +103,6 @@ const saveShopToModel = ({id, name, visited, url, rating, is_open}, myAddr) => {
 module.exports.saveShopToModel = saveShopToModel;
 module.exports.searchAddr = searchAddr;
 module.exports.searchShops = searchShops;
-module.exports.retrieveShops = retrieveShops;
+module.exports.updateVisit = updateVisit;
 
 

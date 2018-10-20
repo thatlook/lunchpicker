@@ -16,17 +16,17 @@ const getYelpStores = (myAddr, cb) => {
   // console.log('>>> token in yelp', TOKEN);
 
   // use sample data
-  cb(null, JSON.stringify(data))
+  // cb(null, JSON.stringify(data))
 
   // uncomment when ready!
-  // request.get(options, (err, res, body) => {
-  //   if (err) {
-  //     console.log('Error on getting API calls from yelp!')
-  //     cb(err, null)
-  //   } else {
-  //     cb(null, body)   
-  //   }
-  // })
+  request.get(options, (err, res, body) => {
+    if (err) {
+      console.log('Error on getting API calls from yelp!')
+      cb(err, null)
+    } else {
+      cb(null, body)   
+    }
+  })
   
 }
 

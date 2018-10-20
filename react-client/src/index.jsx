@@ -9,36 +9,52 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     
+    // some addresses
+    // home: 501 W 26th St, Austin, TX 78705
+    // galvanize: 119 Nueces St. Austin TX 78701
+    // LA: 6060 Center Dr #950, Los Angeles, CA 90045
+    // new york: 315 Hudson Street Second Floor, New York, NY 10013
+    // san fransisco hack reactor: 944 Market Street, 8th floor, San Francisco, CA 94102
+
     this.state = { 
-      myAddr: '119 Nueces St. Austin TX 78701',  // my current address
+      myAddr: '',  // my current address
       main: 'main',  // used as react side router
       restaurants: [],  // all restaurants to show
+
       visited: [],  // all restaurants hidden because visited
-      myPastAddr: ['119 Nueces St. Austin TX 78701'],  // my past restaurants
+      myPastAddr: [],  // my past restaurants
       random: false
     };
 
   }
 
-  componentDidMount() {
-    // get number of stores from database
-
-  }
 
   handleSubmitAddr(event){
     event.preventDefault();
+    this.setState((state) => {
 
-    console.log(this.state.myAddr)
-    // 1) save address to db, 2) fetch and save shops to db, 3) render shops on page
-    axios.post('/closest', { myAddr: this.state.myAddr }).then((res)=>{
-      // console.log('>>> res from axios: ', res.data);
-      
-      this.setState({
-        main: 'closest',  // redirect to next page
-        restaurants: res.data  // shops excluding visited
-      })
+      this.setState({main: 'closest'})
+
+      if (!state.myPastAddr.includes(state.myAddr)) {
+        state.myPastAddr.push(state.myAddr)
+
+        // 1) save address to db, 2) fetch and save shops to db, 3) render shops on page
+        console.log('>>> myaddr', this.state.myAddr)
+        axios.post('/closest', { myAddr: this.state.myAddr }).then((res)=>{
+          // console.log('>>> res from axios: ', res.data);
+          
+          this.setState({
+            // main: 'closest',  // redirect to next page
+            restaurants: res.data,  
+            visited: []
+          })
+    
+        })
+
+      }
 
     })
+
     
   }
 
@@ -46,9 +62,7 @@ class App extends React.Component {
     event.preventDefault();
     event.persist();
 
-    this.setState((state) => {
-      return {myAddr: event.target.value}
-    })
+    this.setState({myAddr: event.target.value})
 
 
   }
@@ -63,7 +77,7 @@ class App extends React.Component {
     this.setState((state) => {  // this is how to trigger state change of array
       if (!state.visited.includes(i)) {
         state.visited.push(i)
-        axios.post('/went', { shop: state.restaurants[i - 1] })  // send to db
+        axios.post('/went', { shop: state.restaurants[i -1] })  // send to db
         
       }
     })
@@ -73,13 +87,16 @@ class App extends React.Component {
   randomPicker(event){
     event.preventDefault();
 
-    // TODO: choose random shop
-    let limit = this.state.restaurants.length;  // TODO: reflect what was taken out...
-    console.log('>>> random', Math.floor(Math.random()*(limit - 1)))
-
+    let odds = this.state.restaurants.filter((item, i)=> (!this.state.visited.includes(i + 1) && !item.visited))
+    let limit = odds.length;
+    let randomI = Math.floor(Math.random()*(limit - 1))
+    let randomShop = odds[randomI].name;
+    console.log('>>> random shop', randomShop)
+    console.log('>>> rest/visited', this.state.restaurants.length, this.state.visited.length, odds)
+    console.log('>>> randomI', limit, randomI)
     this.setState({
       random: true,
-      randomChosen: 'Here'
+      randomChosen: randomShop
     })
   }
 
@@ -93,6 +110,7 @@ class App extends React.Component {
 
 
   render () {
+    // console.log('>>> state', this.state.main)
     // main page
     if (this.state.main === 'main') {
       return (
@@ -130,7 +148,7 @@ class App extends React.Component {
           {/* TODO:  */}
           <br></br>
           <button onClick={this.goBackToSearch.bind(this)}>Go back</button>
-          <button>Show all</button>
+          <button>Show all 20</button>
           <button onClick={this.randomPicker.bind(this)}>Random</button>
         </div>
       )
