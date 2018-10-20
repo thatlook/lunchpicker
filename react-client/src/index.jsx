@@ -8,12 +8,20 @@ import Closest from './components/closest.jsx';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = { 
-      myAddr: '119 Nueces St. Austin TX 78701',
-      totalStores: 0,
-      main: 'main',
-      restaurants: [],
-    }
+      myAddr: '119 Nueces St. Austin TX 78701',  // my current address
+      totalStores: 0,  // number of stores in DB
+      main: 'main',  // used as react side router
+      restaurants: [],  // all restaurants to show
+      visited: [],  // all restaurants hidden because visited
+    };
+
+    // line-through css
+    // this.tdStyle = {  
+    //   textDecoration: 'line-through'
+    // }
+
   }
 
   componentDidMount() {
@@ -29,7 +37,7 @@ class App extends React.Component {
   handleSubmitAddr(event){
     event.preventDefault();
     // TODO: change me!
-    axios.post('/closest', { myAddr: '119 Nueces St. Austin TX 78701' }).then((res)=>{
+    axios.post('/closest', { myAddr: this.state.myAddr }).then((res)=>{
       // console.log('>>> res from axios: ', res.data);
       
       this.setState({
@@ -38,11 +46,7 @@ class App extends React.Component {
       })
 
     })
-    // .catch((err)=>{
-    //   this.setState({
-    //     main: 'error'  // redirect to error page
-    //   })
-    // })
+    
   }
 
   handleChangeAddr(event){
@@ -50,6 +54,23 @@ class App extends React.Component {
       myAddr: event.target.value
     })
   }
+
+
+  handleOmit(event){
+    event.preventDefault();
+    // console.log('>>> event target value', event.target.value)
+    
+    event.persist();  // to use in below in .setState
+    this.setState((state) => {  // this is how to trigger state change of array
+      if (!state.visited.includes(parseInt(event.target.value))) {
+        state.visited.push(parseInt(event.target.value))
+        
+      }
+    })
+
+    // send to DB that this person went
+  }
+
 
   render () {
     // main page
@@ -68,17 +89,10 @@ class App extends React.Component {
       return (
         <div>
           <h1>These are the closest restaurants!</h1>
-          <Closest restaurants={this.state.restaurants}/>
+          <Closest restaurants={this.state.restaurants} visited={this.state.visited} handleOmit={this.handleOmit.bind(this)}/>
         </div>
       )
-      // if error
-    } else if (this.state.main === 'error') {
-      return (
-        <div>
-          <h1>An error occured...OTL</h1>
-        </div>
-      )
-    }
+    } 
 
   }
 }
